@@ -1,0 +1,36 @@
+<!-- templates/about/tech.html -->
+{% extends "base.html" %}
+{% block title %}Технологии{% endblock %}
+{% block content %}
+<!-- класс py-5 создает отступы сверху и снизу блока -->
+<div class="container py-5">
+  <div class="row">
+    <h1>Вот что я умею</h1>
+    {% comment %}
+      Боковой блок со списком технологий 
+      Займет всю ширину блока на мобильном
+      и 25% при размерах экрана ≥768px
+    {% endcomment %}
+    <aside class="col-12 col-md-3">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item">
+          Python немного
+        </li>
+        <li class="list-group-item">
+          Django учусь
+        </li>
+      </ul>
+    </aside>
+    {% comment %}
+      Статья  
+      Займет всю ширину блока на мобильном
+      и 75% при размерах экрана ≥768px
+    {% endcomment %}
+    <article class="col-12 col-md-9">
+      <p>Изучаю язык программирования Python и фреймворк Django.
+          Работаю над созданием сайта Yatube.
+      </p>
+    </article>
+  </div>
+</div>
+{% endblock %}
