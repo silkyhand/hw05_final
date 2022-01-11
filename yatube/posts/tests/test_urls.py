@@ -155,6 +155,7 @@ class PostCacheTest(TestCase):
 
     def test_cache_index_page(self):
         """Проверка кэша страницы index.html"""
+        cache.clear()
         response_new_post = self.guest_client.get(reverse('posts:index'))
         self.assertContains(response_new_post, PostCacheTest.post.text)
         Post.objects.get(text=PostCacheTest.post.text).delete()
