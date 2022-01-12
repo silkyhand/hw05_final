@@ -85,6 +85,7 @@ class PaginatorViewsTest(TestCase):
     def setUp(self):
         self.author_client = Client()
         self.author_client.force_login(PaginatorViewsTest.user)
+        self.post_obj = 'post'
 
     def test_paginator_on_pages_with_post(self):
         """Проверка страниц с паджинатором"""
@@ -186,14 +187,16 @@ class PaginatorViewsTest(TestCase):
         response = (self.author_client.get(
             reverse('posts:post_detail', args={self.post.id})))
         self.assertEqual(response.context.get
-                         ('post').author.username,
+                         (self.post_obj).author.username,
                          (PaginatorViewsTest.user.username))
         self.assertEqual(response.context.get
-                         ('post').text, PaginatorViewsTest.post.text)
+                         (self.post_obj).text, PaginatorViewsTest.post.text)
         self.assertEqual(response.context.get
-                         ('post').group.title, PaginatorViewsTest.group.title)
+                         (self.post_obj).group.title,
+                         PaginatorViewsTest.group.title)
+
         self.assertEqual(response.context.get
-                         ('post').image.name,
+                         (self.post_obj).image.name,
                          PaginatorViewsTest.post.image.name)
 
     def test_create_post_post_edit_show_correct_context(self):

@@ -171,7 +171,7 @@ class CommentFormTests(TestCase):
         )
         self.assertEqual(Comment.objects.count(), comment_count + 1)
 
-    def test_guest_not_create_post(self):
+    def test_guest_not_create_comment(self):
         """Не авторизованный пользователь не может комментировать."""
         comment_count = Comment.objects.count()
         response = self.guest_client.post(

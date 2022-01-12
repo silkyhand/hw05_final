@@ -63,6 +63,7 @@ class PostURLTest(TestCase):
             f'/profile/{self.user.username}/': 'posts/profile.html',
             f'/posts/{self.post_id}/': 'posts/post_detail.html',
             '/create/': 'posts/create_post.html',
+            '/follow/': 'posts/follow.html',
         }
         self.list_urls_author = {
             '/': 'posts/index.html',
@@ -71,6 +72,16 @@ class PostURLTest(TestCase):
             f'/posts/{self.post_id}/': 'posts/post_detail.html',
             '/create/': 'posts/create_post.html',
             f'/posts/{self.post_id}/edit/': 'posts/create_post.html',
+        }
+        self.list_urls_redirect = {
+            f'/posts/{self.post_id}/edit/': f'/posts/{self.post_id}/',
+            f'/posts/{self.post_id}/comment/': f'/posts/{self.post_id}/',
+
+            f'/profile/{PostURLTest.user_author.username}/follow/':
+            f'/profile/{PostURLTest.user_author.username}/',
+
+            f'/profile/{PostURLTest.user_author.username}/unfollow/':
+            f'/profile/{PostURLTest.user_author.username}/',
         }
 
     def test_urls_gest_exists_at_desired_location(self):
@@ -95,14 +106,11 @@ class PostURLTest(TestCase):
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
     def test_urls_not_author_redirect(self):
-        """Страница по адресу '/posts/{self.post_id}/edit/' перенаправит
-        не автора на страницу 'posts/<int:post_id>/'.
-        """
-        response = self.authorized_client.get(
-            f'/posts/{self.post_id}/edit/', follow=True)
-        self.assertRedirects(
-            response, f'/posts/{self.post_id}/'
-        )
+        """URL-адреса страниц с редиректом работают правильно."""
+        for url_adress, redirect in self.list_urls_redirect.items():
+            with self.subTest(adress=url_adress):
+                response = self.authorized_client.get(url_adress, follow=True)
+                self.assertRedirects(response, redirect)
 
     def test_urls_guest_uses_correct_template(self):
         """URL-адрес для любого пользователя
