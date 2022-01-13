@@ -39,10 +39,7 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     user_posts = author.posts.all()
     if request.user.is_authenticated:
-        try:
-            following = author.following.filter(user=request.user)
-        except User.DoesNotExist:
-            following = False
+        following = author.following.filter(user=request.user)
     else:
         following = False
     context = {
@@ -126,9 +123,9 @@ def profile_follow(request, username):
     user = get_object_or_404(User, username=request.user.username)
     if author == request.user:
         return redirect('posts:profile', username)
-    else:
-        Follow.objects.get_or_create(user=user, author=author)
-        return redirect('posts:profile', username)
+
+    Follow.objects.get_or_create(user=user, author=author)
+    return redirect('posts:profile', username)
 
 
 @login_required

@@ -291,6 +291,10 @@ class FollowViewsTest(TestCase):
 
     def test_auth_can_follow(self):
         """Авторизованный пользователь может подписываться"""
+        follow = Follow.objects.create(
+            user=FollowViewsTest.user_follower,
+            author=FollowViewsTest.author,
+        )
         response_follow = self.user_follower.get(
             reverse('posts:profile_follow',
                     args={FollowViewsTest.post.author.username})
@@ -299,16 +303,16 @@ class FollowViewsTest(TestCase):
             author__following__user=FollowViewsTest.user_follower).latest(
                 'created')
         self.assertEqual(FollowViewsTest.post.text, latest_post.text)
-        self.assertEqual(FollowViewsTest.post.author, latest_post.author)
+        self.assertEqual(FollowViewsTest.post.author, follow.author)
         self.assertRedirects(response_follow, reverse(
             'posts:profile', args={FollowViewsTest.author.username})
         )
 
     def test_auth_can_unfollow(self):
         """Авторизованный пользователь может описаться"""
-        self.user_follower.get(
-            reverse('posts:profile_follow',
-                    args={FollowViewsTest.post.author.username})
+        Follow.objects.create(
+            user=FollowViewsTest.user_follower,
+            author=FollowViewsTest.author,
         )
         response_unfollow = self.user_follower.get(
             reverse('posts:profile_unfollow',
