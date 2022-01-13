@@ -5,28 +5,13 @@
 {% endblock %}
 {% block content %}
 <div class="container py-5">
-  {% for post in page_obj %}
   <h1>{{ group.title }}</h1>
-  <p>
-    {{ group.description }}
-  </p>
- <article>               
-  <ul>
-    <li>
-      Автор: {{ post.author.get_full_name }} 
-    </li>
-    <li>
-      Дата публикации: {{ post.created|date:"d E Y" }} 
-    </li>
-  </ul> 
-  {% thumbnail post.image "960x350" crop="center" upscale=True as im %}
-    <img class="card-img my-2" src="{{ im.url }}">
-  {% endthumbnail %}           
-  <p>{{ post.text }}</p>              
- {% if not forloop.last %}<hr>{% endif %}  
+  <p>{{ group.description }}</p>
+ {% for post in page_obj %} 
+ {% include 'posts/includes/post_list.html' %}               
+  {% if not forloop.last %}<hr>{% endif %}  
  {% endfor %} 
- {% include 'includes/paginator.html' %}      
- </article>
+ {% include 'posts/includes/paginator.html' %} 
 </div>
 {% endblock %} 
  

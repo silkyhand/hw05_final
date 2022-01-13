@@ -85,7 +85,6 @@ class PaginatorViewsTest(TestCase):
     def setUp(self):
         self.author_client = Client()
         self.author_client.force_login(PaginatorViewsTest.user)
-        self.post_obj = 'post'
 
     def test_paginator_on_pages_with_post(self):
         """Проверка страниц с паджинатором"""
@@ -186,17 +185,14 @@ class PaginatorViewsTest(TestCase):
         """Шаблон post_detail сформирован с правильным контекстом."""
         response = (self.author_client.get(
             reverse('posts:post_detail', args={self.post.id})))
-        self.assertEqual(response.context.get
-                         (self.post_obj).author.username,
+        post_obj = response.context.get('post')
+        self.assertEqual(post_obj.author.username,
                          (PaginatorViewsTest.user.username))
-        self.assertEqual(response.context.get
-                         (self.post_obj).text, PaginatorViewsTest.post.text)
-        self.assertEqual(response.context.get
-                         (self.post_obj).group.title,
+        self.assertEqual(post_obj.text, PaginatorViewsTest.post.text)
+        self.assertEqual(post_obj.group.title,
                          PaginatorViewsTest.group.title)
 
-        self.assertEqual(response.context.get
-                         (self.post_obj).image.name,
+        self.assertEqual(post_obj.image.name,
                          PaginatorViewsTest.post.image.name)
 
     def test_create_post_post_edit_show_correct_context(self):
@@ -293,10 +289,8 @@ class FollowViewsTest(TestCase):
         self.author = Client()
         self.author.force_login(FollowViewsTest.author)
 
-    def test_auth_can_follow_and_unfollow(self):
-        """Авторизованный пользователь может
-        подписываться и удалять пользователя из подписок
-        """
+    def test_auth_can_follow(self):
+        """Авторизованный пользователь может подписываться"""
         response_follow = self.user_follower.get(
             reverse('posts:profile_follow',
                     args={FollowViewsTest.post.author.username})
@@ -308,6 +302,13 @@ class FollowViewsTest(TestCase):
         self.assertEqual(FollowViewsTest.post.author, latest_post.author)
         self.assertRedirects(response_follow, reverse(
             'posts:profile', args={FollowViewsTest.author.username})
+        )
+
+    def test_auth_can_unfollow(self):
+        """Авторизованный пользователь может описаться"""
+        self.user_follower.get(
+            reverse('posts:profile_follow',
+                    args={FollowViewsTest.post.author.username})
         )
         response_unfollow = self.user_follower.get(
             reverse('posts:profile_unfollow',
@@ -321,9 +322,7 @@ class FollowViewsTest(TestCase):
         )
 
     def test_post_appears_in_followers(self):
-        """Новая запись пользователя появляется в ленте тех,
-        кто на него подписан и не появляется в ленте тех, кто не подписан.
-        """
+        """У подписанного пользователя появляется пост в ленте"""
         Follow.objects.create(
             user=FollowViewsTest.user_follower,
             author=FollowViewsTest.author,
@@ -341,6 +340,16 @@ class FollowViewsTest(TestCase):
         self.assertEqual(post_author_0, post.author.username)
         self.assertEqual(post_text_0, post.text)
 
+    def test_post_not_appears_in_unfollowers(self):
+        """У не подписанного пользователя отсутстувет пост в ленте"""
+        self.user_follower.get(
+            reverse('posts:profile_follow',
+                    args={FollowViewsTest.post.author.username})
+        )
+        Post.objects.create(
+            author=FollowViewsTest.author,
+            text='Пост не должен появиться в ленте подписчика',
+        )
         self.assertFalse(Post.objects.filter(
             author__following__user=FollowViewsTest.user_unfollower).exists()
         )

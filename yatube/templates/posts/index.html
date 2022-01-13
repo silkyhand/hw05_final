@@ -10,13 +10,13 @@
   <h1>Последние обновления на сайте</h1> 
   {% include 'includes/switcher.html' %}
   {% for post in page_obj %}
-  {% include 'includes/post_list.html' %}
+  {% include 'posts/includes/post_list.html' %}
     {% if post.group.slug is not None %}              
       <a href="{% url 'posts:group_list' post.group.slug %}">все записи группы</a>
     {% endif %}  
     {% if not forloop.last %}<hr>{% endif %}  
   {% endfor %}  
-  {% include 'includes/paginator.html' %}  
+  {% include 'posts/includes/paginator.html' %}  
 </div>
 {% endcache %}
 {% endblock %} 

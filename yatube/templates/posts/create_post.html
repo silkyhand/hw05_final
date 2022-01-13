@@ -2,11 +2,10 @@
 {% block title %}
   {% if is_edit %}
     Редактировать пост
-  {% else %}
+   {% else %}
     Новый пост
-  {% endif %}  
+  {% endif %}   
 {% endblock %} 
-
 {% block content %}  
 <div class="container py-5"> 
   <div class="row justify-content-center">
@@ -15,12 +14,11 @@
         <div class="card-header">       
           {% if is_edit %}
             Редактировать пост
-          {% else %}
+           {% else %}
             Новый пост
-          {% endif %}              
+          {% endif %}     
         </div>
-        <div class="card-body">  
-          
+        <div class="card-body">            
           {% load user_filters %} {# Загружаем фильтры #}
             {% if form.errors %}
               {% for field in form %} 
