@@ -105,7 +105,7 @@ class PostURLTest(TestCase):
                 response = self.author_client.get(url_adress)
                 self.assertEqual(response.status_code, HTTPStatus.OK)
 
-    def test_urls_not_author_redirect(self):
+    def test_urls_redirect(self):
         """URL-адреса страниц с редиректом работают правильно."""
         for url_adress, redirect in self.list_urls_redirect.items():
             with self.subTest(adress=url_adress):
