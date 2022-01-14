@@ -299,14 +299,6 @@ class FollowViewsTest(TestCase):
             reverse('posts:profile_follow',
                     args={FollowViewsTest.post.author.username})
         )
-        post = Post.objects.create(
-            author=FollowViewsTest.author,
-            text='Пост для проверки подписки',
-        )
-        latest_post = Post.objects.filter(
-            author__following__user=FollowViewsTest.user_follower).latest(
-                'created')
-        self.assertEqual(post.text, latest_post.text)
         self.assertTrue(Follow.objects.filter(
             author=FollowViewsTest.author,
             user=FollowViewsTest.user_follower).exists()
