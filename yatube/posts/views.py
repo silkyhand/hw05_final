@@ -14,14 +14,14 @@ def paginator_func(queryset, request):
     paginator = Paginator(queryset, settings.POSTS_PAGE)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return {
-        'page_obj': page_obj,
-    }
+    return page_obj
 
 
 def index(request):
     template = 'posts/index.html'
-    context = paginator_func(Post.objects.all(), request)
+    context = {
+        'page_obj': paginator_func(Post.objects.all(), request)
+    }
     return render(request, template, context)
 
 
@@ -30,8 +30,9 @@ def group_posts(request, slug):
     post_list = group.posts.all()
     context = {
         'group': group,
+        'page_obj': paginator_func(post_list, request),
     }
-    context.update(paginator_func(post_list, request))
+
     return render(request, 'posts/group_list.html', context)
 
 
@@ -45,8 +46,8 @@ def profile(request, username):
     context = {
         'author': author,
         'following': following,
+        'page_obj': paginator_func(user_posts, request),
     }
-    context.update(paginator_func(user_posts, request))
     return render(request, 'posts/profile.html', context)
 
 
@@ -113,7 +114,9 @@ def add_comment(request, post_id):
 @login_required
 def follow_index(request):
     posts = Post.objects.filter(author__following__user=request.user)
-    context = paginator_func(posts, request)
+    context = {
+        'page_obj': paginator_func(posts, request),
+    }
     return render(request, 'posts/follow.html', context)
 
 

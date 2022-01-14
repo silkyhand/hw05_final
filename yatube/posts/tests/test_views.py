@@ -291,19 +291,26 @@ class FollowViewsTest(TestCase):
 
     def test_auth_can_follow(self):
         """Авторизованный пользователь может подписываться"""
-        follow = Follow.objects.create(
-            user=FollowViewsTest.user_follower,
+        self.assertFalse(Follow.objects.filter(
             author=FollowViewsTest.author,
+            user=FollowViewsTest.user_follower).exists()
         )
         response_follow = self.user_follower.get(
             reverse('posts:profile_follow',
                     args={FollowViewsTest.post.author.username})
         )
+        post = Post.objects.create(
+            author=FollowViewsTest.author,
+            text='Пост для проверки подписки',
+        )
         latest_post = Post.objects.filter(
             author__following__user=FollowViewsTest.user_follower).latest(
                 'created')
-        self.assertEqual(FollowViewsTest.post.text, latest_post.text)
-        self.assertEqual(FollowViewsTest.post.author, follow.author)
+        self.assertEqual(post.text, latest_post.text)
+        self.assertTrue(Follow.objects.filter(
+            author=FollowViewsTest.author,
+            user=FollowViewsTest.user_follower).exists()
+        )
         self.assertRedirects(response_follow, reverse(
             'posts:profile', args={FollowViewsTest.author.username})
         )
@@ -318,8 +325,9 @@ class FollowViewsTest(TestCase):
             reverse('posts:profile_unfollow',
                     args={FollowViewsTest.post.author.username})
         )
-        self.assertFalse(Post.objects.filter(
-            author__following__user=FollowViewsTest.user_follower).exists()
+        self.assertFalse(Follow.objects.filter(
+            author=FollowViewsTest.author,
+            user=FollowViewsTest.user_follower).exists()
         )
         self.assertRedirects(response_unfollow, reverse(
             'posts:profile', args={FollowViewsTest.author.username})
