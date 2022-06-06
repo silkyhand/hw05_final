@@ -11,11 +11,11 @@
 - Django ORM
 
 ## Запуск проекта в dev-режиме:
-Клонировать репозиторий и перейти в него в командной строке:
+Клонируйте репозиторий:
 ```sh
 https://github.com/silkyhand/hw05_final.git
 ```
-Cоздать и активировать виртуальное окружение:
+Cоздайте и активируйте виртуальное окружение:
 ```sh
 python -m venv venv
 ```
@@ -26,7 +26,7 @@ source venv/Scripts/activate
 ```sh
 pip install -r requirements.txt
 ```
-Применените миграции:
+Примените миграции:
 ```sh
 python manage.py makemigrations
 ```
